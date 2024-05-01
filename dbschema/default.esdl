@@ -9,6 +9,8 @@ module default {
   );
 
   type User {
-    required identity: ext::auth::Identity;
+    required identity: ext::auth::Identity {
+      constraint exclusive;
+    };
   }
 }
