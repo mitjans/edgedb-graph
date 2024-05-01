@@ -1,3 +1,6 @@
 {
-  "extends": "../.nuxt/tsconfig.server.json"
+  "extends": "../.nuxt/tsconfig.server.json",
+  // TODO: Remove once the following issue is resolved:
+  // https://github.com/nuxt/nuxt/issues/26871#issuecomment-2082226649
+  "compilerOptions": { "noEmit": true }
 }

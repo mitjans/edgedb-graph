@@ -24,5 +24,6 @@ logs
 !.env.example
 
 # EdgeDB generated files
-dbschema/interfaces.ts
+dbschema/edgeql-js
 dbschema/queries.ts
+dbschema/interfaces.ts
