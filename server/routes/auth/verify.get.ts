@@ -44,6 +44,8 @@ export default defineEventHandler(async (event) => {
   }
 
   const { auth_token: authToken } = await tokenResponse.json();
+
+  deleteCookie(event, 'edgedb-pkce-verifier');
   setCookie(event, 'edgedb-auth-token', authToken, {
     httpOnly: true,
     secure: true,
