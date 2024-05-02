@@ -8,7 +8,7 @@ const signup = () => {
     body: {
       email: email.value,
       password: password.value,
-      provider: '',
+      provider: 'builtin::local_emailpassword',
     },
   });
 };
@@ -18,7 +18,7 @@ const signin = async () => {
     body: {
       email: email.value,
       password: password.value,
-      provider: '',
+      provider: 'builtin::local_emailpassword',
     },
   });
   await navigateTo('/dashboard', { external: true });
