@@ -1,6 +1,4 @@
 <script setup lang="ts">
-definePageMeta({ middleware: 'auth' });
-
 const { user } = useUser();
 
 const logout = async () => {
