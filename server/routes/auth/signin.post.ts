@@ -1,6 +1,4 @@
 import * as v from 'valibot';
-import e from '~/dbschema/edgeql-js';
-import { createClient } from 'edgedb';
 
 const bodySchema = v.object({
   email: v.string(),
@@ -47,19 +45,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ status: 400, message });
   }
 
-  const { auth_token: authToken, identity_id: identityId } = await tokenResponse.json();
-
-  const client = createClient();
-  await e
-    .insert(e.User, {
-      identity: e.assert_exists(
-        e.select(e.ext.auth.Identity, () => ({
-          filter_single: { id: identityId },
-        })),
-      ),
-    })
-    .unlessConflict()
-    .run(client);
+  const { auth_token: authToken } = await tokenResponse.json();
 
   setCookie(event, 'edgedb-auth-token', authToken, {
     httpOnly: true,
