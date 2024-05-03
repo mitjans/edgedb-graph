@@ -7,7 +7,9 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "preinstall": "npx only-allow bun",
+    "postinstall": "nuxt prepare",
+    "edgedb:generate": "npx @edgedb/generate interfaces && npx @edgedb/generate edgeql-js && npx @edgedb/generate queries --file"
   },
   "dependencies": {
     "edgedb": "^1.5.4",
