@@ -1,18 +1,41 @@
 import * as v from 'valibot';
 
-const bodySchema = v.object({
-  email: v.string(),
-  password: v.string(),
-  provider: v.string(),
-});
+const bodySchema = v.variant('provider', [
+  v.object({
+    provider: v.literal('builtin::local_emailpassword'),
+    email: v.string(),
+    password: v.string(),
+  }),
+  v.object({
+    provider: v.literal('builtin::oauth_google'),
+    email: v.undefined_(),
+    password: v.undefined_(),
+  }),
+]);
 
 export default defineEventHandler(async (event) => {
   const { password, provider, email } = await readValidatedBody(event, (data) => v.parse(bodySchema, data));
+
   const { challenge, verifier } = generatePKCE();
 
   const {
     edgedb: { authBaseUrl },
   } = useRuntimeConfig();
+
+  if (provider === 'builtin::oauth_google') {
+    const redirectUrl = new URL('authorize', authBaseUrl);
+    redirectUrl.searchParams.set('provider', provider);
+    redirectUrl.searchParams.set('challenge', challenge);
+    redirectUrl.searchParams.set('redirect_to', 'http://localhost:3000/auth/callback');
+
+    setCookie(event, 'edgedb-pkce-verifier', verifier, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'strict',
+    });
+
+    return { redirect: redirectUrl.href };
+  }
 
   const authenticateUrl = new URL('authenticate', authBaseUrl);
   const authenticateResponse = await fetch(authenticateUrl.href, {
@@ -52,4 +75,6 @@ export default defineEventHandler(async (event) => {
     secure: true,
     sameSite: 'strict',
   });
+
+  return { redirect: '/' };
 });
