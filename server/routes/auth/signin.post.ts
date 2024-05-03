@@ -23,10 +23,11 @@ export default defineEventHandler(async (event) => {
   } = useRuntimeConfig();
 
   if (provider === 'builtin::oauth_google') {
+    const { origin } = getRequestURL(event);
     const redirectUrl = new URL('authorize', authBaseUrl);
     redirectUrl.searchParams.set('provider', provider);
     redirectUrl.searchParams.set('challenge', challenge);
-    redirectUrl.searchParams.set('redirect_to', 'http://localhost:3000/auth/callback');
+    redirectUrl.searchParams.set('redirect_to', `${origin}/auth/callback`);
 
     setCookie(event, 'edgedb-pkce-verifier', verifier, {
       httpOnly: true,
