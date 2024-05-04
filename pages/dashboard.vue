@@ -20,26 +20,23 @@ const submit = async () => {
     return;
   }
 
-  const vector = await fetch('https://api.openai.com/v1/embeddings', {
+  const { data } = await $fetch<{ data: { embedding: number[] }[] }>('https://api.openai.com/v1/embeddings', {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${openaiApiKey.value}`,
-    },
-    body: JSON.stringify({
+    headers: { Authorization: `Bearer ${openaiApiKey.value}` },
+    body: {
       input: query.value,
       model: 'text-embedding-3-small',
-    }),
+    },
   });
 
-  const queryEmbedding = (await vector.json()).data[0].embedding;
+  const queryEmbedding = data[0].embedding;
 
-  const searchResults = await fetch('/api/search', {
+  const { result: searchResults } = await $fetch('/api/search', {
     method: 'POST',
-    body: JSON.stringify(queryEmbedding),
+    body: { query: queryEmbedding },
   });
 
-  result.value = (await searchResults.json()).body;
+  result.value = JSON.stringify(searchResults, null, 2);
 };
 </script>
 
