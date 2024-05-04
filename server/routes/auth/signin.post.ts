@@ -27,7 +27,7 @@ export default defineEventHandler(async (event) => {
     const redirectUrl = new URL('authorize', authBaseUrl);
     redirectUrl.searchParams.set('provider', provider);
     redirectUrl.searchParams.set('challenge', challenge);
-    redirectUrl.searchParams.set('redirect_to', `${origin}/auth/callback`);
+    redirectUrl.searchParams.set('redirect_to', `${origin}/callback/google`);
 
     setCookie(event, 'edgedb-pkce-verifier', verifier, {
       httpOnly: true,

@@ -45,11 +45,12 @@ export default defineEventHandler(async (event) => {
     .unlessConflict()
     .run(client);
 
+  deleteCookie(event, 'edgedb-pkce-verifier');
   setCookie(event, 'edgedb-auth-token', auth_token, {
     httpOnly: true,
     secure: true,
     sameSite: 'strict',
   });
 
-  sendRedirect(event, '/');
+  return { redirect: '/dashboard' };
 });
