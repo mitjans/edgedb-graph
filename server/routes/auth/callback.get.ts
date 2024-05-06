@@ -52,5 +52,5 @@ export default defineEventHandler(async (event) => {
     sameSite: 'strict',
   });
 
-  return { redirect: '/dashboard' };
+  return { redirect: '/' };
 });
