@@ -80,11 +80,12 @@ const signinWithGoogle = async () => {
     </form>
     <hr />
     <button
-      class="rounded-xl border-2 border-neutral-500 px-4 py-2 text-neutral-500 shadow-[0_4px_10px_rgba(0,0,0,.1)] outline-none transition hover:border-neutral-600 hover:shadow-[0_6px_20px_rgba(0,0,0,.12)] focus:border-neutral-600 focus:shadow-[0_6px_20px_rgba(0,0,0,.12)] disabled:cursor-not-allowed disabled:bg-emerald-200 disabled:shadow-none"
+      class="flex items-center justify-center gap-2 rounded-xl border-2 border-neutral-500 px-4 py-2 text-neutral-500 shadow-[0_4px_10px_rgba(0,0,0,.1)] outline-none transition hover:border-neutral-600 hover:shadow-[0_6px_20px_rgba(0,0,0,.12)] focus:border-neutral-600 focus:shadow-[0_6px_20px_rgba(0,0,0,.12)] disabled:cursor-not-allowed disabled:bg-emerald-200 disabled:shadow-none"
       type="submit"
       @click="signinWithGoogle()"
     >
-      SignIn with Google
+      <Icon name="logos:google-icon" />
+      <span>SignIn with Google</span>
     </button>
   </div>
 </template>
