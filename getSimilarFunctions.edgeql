@@ -3,8 +3,9 @@ with
     Function, <array<float32>><json>$query
   )
   select result.object {
-      expression,
-      distance := result.distance,
+    id,
+    expression,
+    distance := result.distance,
   }
   order by
     result.distance asc empty last

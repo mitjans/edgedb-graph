@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const query = ref<string>('');
-const result = ref<string>('');
+const result = ref<{ id: string; expression: string; distance: number }[]>([]);
 const { fetchEmbedding, key } = useOpenAi();
 
 const submit = async () => {
@@ -12,6 +12,8 @@ const submit = async () => {
     return;
   }
 
+  searching.value = true;
+
   const queryEmbedding = await fetchEmbedding(query.value);
 
   const { result: searchResults } = await $fetch('/api/search', {
@@ -19,11 +21,14 @@ const submit = async () => {
     body: { query: queryEmbedding },
   });
 
-  result.value = JSON.stringify(searchResults, null, 2);
+  result.value = searchResults;
+
+  searching.value = false;
 };
 
 const mounted = ref(false);
 const show = ref(false);
+const searching = ref(false);
 
 onMounted(() => {
   mounted.value = true;
@@ -66,12 +71,22 @@ onMounted(() => {
 
       <button
         type="submit"
-        class="rounded-xl bg-emerald-400 px-6 py-3 text-neutral-50 shadow-[0_4px_10px_rgba(0,0,0,.1)] outline-none transition hover:bg-emerald-500 hover:shadow-[0_6px_20px_rgba(0,0,0,.12)] focus:bg-emerald-500 focus:shadow-[0_6px_20px_rgba(0,0,0,.12)] disabled:cursor-not-allowed disabled:bg-emerald-200 disabled:shadow-none"
+        class="flex items-center gap-2 rounded-xl bg-emerald-400 px-6 py-3 text-neutral-50 shadow-[0_4px_10px_rgba(0,0,0,.1)] outline-none transition hover:bg-emerald-500 hover:shadow-[0_6px_20px_rgba(0,0,0,.12)] focus:bg-emerald-500 focus:shadow-[0_6px_20px_rgba(0,0,0,.12)] disabled:cursor-not-allowed disabled:bg-emerald-200 disabled:shadow-none"
         :disabled="query.length === 0 || key === null"
         @click="submit"
       >
-        Send
+        <span>Send</span>
+
+        <Icon
+          size="18"
+          :name="searching ? 'ph:spinner' : 'ph:arrow-circle-right-fill'"
+          :class="searching && 'animate-spin'"
+        />
       </button>
     </form>
+
+    <div class="flex flex-col gap-2 p-10">
+      <pre v-for="{ id, expression } in result" :key="id">{{ expression }}</pre>
+    </div>
   </div>
 </template>
