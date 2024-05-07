@@ -29,7 +29,9 @@ export default defineEventHandler(async (event) => {
   });
 
   if (!registerResponse.ok) {
-    const message = await registerResponse.text();
+    const {
+      error: { message },
+    } = await registerResponse.json();
     throw createError({ status: 400, message });
   }
 

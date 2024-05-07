@@ -24,7 +24,11 @@ onKeyStroke('Escape', () => (show.value = !dismissable));
       }"
     >
       <div v-if="show" class="fixed inset-0 z-20 grid place-items-center bg-black/5 backdrop-blur-md">
-        <div ref="modal" :class="$attrs.class" class="overlay flex flex-col gap-10 rounded-2xl border-2 bg-white p-6">
+        <div
+          ref="modal"
+          :class="$attrs.class"
+          class="overlay flex flex-col gap-10 rounded-2xl border-2 bg-white p-6 shadow-[0_0_20px_rgba(0,0,0,0.1)]"
+        >
           <div class="flex w-full flex-row-reverse items-center justify-between">
             <button @click="show = false">
               <Icon name="ph:x" />

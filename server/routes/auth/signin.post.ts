@@ -51,7 +51,9 @@ export default defineEventHandler(async (event) => {
   });
 
   if (!authenticateResponse.ok) {
-    const message = await authenticateResponse.text();
+    const {
+      error: { message },
+    } = await authenticateResponse.json();
     throw createError({ status: 400, message });
   }
 
@@ -65,7 +67,9 @@ export default defineEventHandler(async (event) => {
   });
 
   if (!tokenResponse.ok) {
-    const message = await authenticateResponse.text();
+    const {
+      error: { message },
+    } = await authenticateResponse.json();
     throw createError({ status: 400, message });
   }
 
