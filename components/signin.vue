@@ -11,6 +11,11 @@ const useEmailPasswordSignIn = () => {
   const signupError = ref('');
 
   const signup = async () => {
+    if (!email.value || !password.value) {
+      signupError.value = 'Please enter both email and password';
+      return;
+    }
+
     signupLoading.value = true;
 
     try {
@@ -34,6 +39,11 @@ const useEmailPasswordSignIn = () => {
   };
 
   const signin = async () => {
+    if (!email.value || !password.value) {
+      signupError.value = 'Please enter both email and password';
+      return;
+    }
+
     signinLoading.value = true;
 
     try {
@@ -131,7 +141,7 @@ const { loading: googleLoading, signin: googleSignIn } = useGoogleSignIn();
         @click="signin()"
       >
         <Icon v-if="signinLoading" name="ph:spinner" class="animate-spin" />
-        <span v-else>SignIn</span>
+        <span v-else>Sign in</span>
       </button>
       <button
         class="rounded-xl border-2 border-emerald-400 px-4 py-2 text-emerald-400 shadow-[0_4px_10px_rgba(0,0,0,.1)] outline-none transition hover:border-emerald-500 hover:shadow-[0_6px_20px_rgba(0,0,0,.12)] focus:border-emerald-500 focus:shadow-[0_6px_20px_rgba(0,0,0,.12)] disabled:cursor-not-allowed disabled:shadow-none"
@@ -140,7 +150,7 @@ const { loading: googleLoading, signin: googleSignIn } = useGoogleSignIn();
         @click="signup()"
       >
         <Icon v-if="signupLoading" name="ph:spinner" class="animate-spin" />
-        <span v-else>SignUp</span>
+        <span v-else>Sign up</span>
       </button>
     </form>
     <hr />
@@ -151,7 +161,7 @@ const { loading: googleLoading, signin: googleSignIn } = useGoogleSignIn();
       @click="googleSignIn()"
     >
       <Icon :name="googleLoading ? 'ph:spinner' : 'logos:google-icon'" :class="googleLoading && 'animate-spin'" />
-      <span>SignIn with Google</span>
+      <span>Sign in with Google</span>
     </button>
   </div>
 </template>

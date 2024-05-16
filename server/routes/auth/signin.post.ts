@@ -3,8 +3,8 @@ import * as v from 'valibot';
 const bodySchema = v.variant('provider', [
   v.object({
     provider: v.literal('builtin::local_emailpassword'),
-    email: v.string(),
-    password: v.string(),
+    email: v.string([v.email()]),
+    password: v.string([v.notLength(0)]),
   }),
   v.object({
     provider: v.literal('builtin::oauth_google'),
