@@ -1,9 +1,9 @@
 import * as v from 'valibot';
 
 const bodySchema = v.object({
-  email: v.string(),
-  password: v.string(),
   provider: v.string(),
+  email: v.string([v.email()]),
+  password: v.string([v.notLength(0)]),
 });
 
 export default defineEventHandler(async (event) => {
@@ -29,7 +29,9 @@ export default defineEventHandler(async (event) => {
   });
 
   if (!registerResponse.ok) {
-    const message = await registerResponse.text();
+    const {
+      error: { message },
+    } = await registerResponse.json();
     throw createError({ status: 400, message });
   }
 
