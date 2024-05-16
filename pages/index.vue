@@ -12,8 +12,9 @@ const signup = () => {
     },
   });
 };
+
 const signin = async () => {
-  await $fetch('/auth/signin', {
+  const { redirect } = await $fetch('/auth/signin', {
     method: 'POST',
     body: {
       email: email.value,
@@ -21,7 +22,17 @@ const signin = async () => {
       provider: 'builtin::local_emailpassword',
     },
   });
-  await navigateTo('/dashboard', { external: true });
+  await navigateTo(redirect, { external: true });
+};
+
+const signinWithGoogle = async () => {
+  const { redirect } = await $fetch('/auth/signin', {
+    method: 'POST',
+    body: {
+      provider: 'builtin::oauth_google',
+    },
+  });
+  await navigateTo(redirect, { external: true });
 };
 </script>
 
@@ -33,6 +44,7 @@ const signin = async () => {
 
       <button type="submit" @click="signin()">SignIn</button>
       <button type="submit" @click="signup()">SignUp</button>
+      <button type="submit" @click="signinWithGoogle()">SignIn with Google</button>
     </form>
   </div>
 </template>

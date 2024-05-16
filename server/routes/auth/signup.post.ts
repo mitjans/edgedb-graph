@@ -14,6 +14,7 @@ export default defineEventHandler(async (event) => {
     edgedb: { authBaseUrl },
   } = useRuntimeConfig();
 
+  const { origin } = getRequestURL(event);
   const registerUrl = new URL('register', authBaseUrl);
   const registerResponse = await fetch(registerUrl.href, {
     method: 'post',
@@ -23,8 +24,7 @@ export default defineEventHandler(async (event) => {
       email,
       password,
       provider,
-      // TODO: Set up verify URL using env variables
-      verify_url: `http://localhost:3000/auth/verify`,
+      verify_url: `${origin}/auth/verify`,
     }),
   });
 
