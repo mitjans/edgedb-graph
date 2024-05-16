@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { Graph, FunctionPlot } from '@ksassnowski/vueclid';
+import { evaluate } from 'mathjs';
+
 const query = ref<string>('');
 const result = ref<{ id: string; expression: string; distance: number }[]>([]);
 const { fetchEmbedding, key } = useOpenAi();
@@ -88,5 +91,9 @@ onMounted(() => {
     <div class="flex flex-col gap-2 p-10">
       <pre v-for="{ id, expression, distance } in result" :key="id">{{ expression }}: {{ distance }}</pre>
     </div>
+
+    <Graph :domain-y="[-2, 2]" :domain-x="[-6, 6]">
+      <FunctionPlot :function="(x: number) => evaluate(`${x}^2 + 3`)" :line-width="2" />
+    </Graph>
   </div>
 </template>

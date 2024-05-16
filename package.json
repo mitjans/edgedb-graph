@@ -11,7 +11,9 @@
     "edgedb:generate": "npx @edgedb/generate interfaces && npx @edgedb/generate edgeql-js && npx @edgedb/generate queries --file"
   },
   "dependencies": {
+    "@ksassnowski/vueclid": "^1.2.0",
     "edgedb": "^1.5.4",
+    "mathjs": "^12.4.2",
     "nuxt": "^3.11.2",
     "valibot": "^0.30.0",
     "vue": "^3.4.21",
