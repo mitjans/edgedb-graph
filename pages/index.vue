@@ -1,10 +1,16 @@
 <script setup lang="ts">
 import { Graph, FunctionPlot } from '@ksassnowski/vueclid';
-import { evaluate } from 'mathjs';
+import { compile } from 'mathjs';
 
 const query = ref<string>('');
 const result = ref<{ id: string; expression: string; distance: number }[]>([]);
 const { fetchEmbedding, key } = useOpenAi();
+
+function createCallback(expressionToComplie: string) {
+  return (x: number) => compile(expressionToComplie).evaluate({ x });
+}
+
+const expressionCallback = ref<(x: number) => number>();
 
 const submit = async () => {
   if (!key.value) {
@@ -14,6 +20,8 @@ const submit = async () => {
     alert('Please enter a query');
     return;
   }
+
+  expressionCallback.value = createCallback(query.value);
 
   searching.value = true;
 
@@ -92,8 +100,15 @@ onMounted(() => {
       <pre v-for="{ id, expression, distance } in result" :key="id">{{ expression }}: {{ distance }}</pre>
     </div>
 
-    <Graph :domain-y="[-2, 2]" :domain-x="[-6, 6]">
-      <FunctionPlot :function="(x: number) => evaluate(`${x}^2 + 3`)" :line-width="2" />
-    </Graph>
+    <ClientOnly>
+      <Graph :domain-y="[-2, 2]" :domain-x="[-6, 6]">
+        <FunctionPlot
+          v-if="expressionCallback"
+          :key="expressionCallback"
+          :function="expressionCallback"
+          :line-width="2"
+        />
+      </Graph>
+    </ClientOnly>
   </div>
 </template>
