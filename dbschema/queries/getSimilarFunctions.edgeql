@@ -7,6 +7,8 @@ with
     expression,
     distance := result.distance,
   }
+  filter
+    result.distance < 0.5 and result.distance > 0.001
   order by
     result.distance asc empty last
     then result.object.expression

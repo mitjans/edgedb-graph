@@ -86,7 +86,7 @@ onMounted(() => {
     </form>
 
     <div class="flex flex-col gap-2 p-10">
-      <pre v-for="{ id, expression } in result" :key="id">{{ expression }}</pre>
+      <pre v-for="{ id, expression, distance } in result" :key="id">{{ expression }}: {{ distance }}</pre>
     </div>
   </div>
 </template>
