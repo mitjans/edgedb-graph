@@ -3,13 +3,15 @@ import { Graph, FunctionPlot } from '@ksassnowski/vueclid';
 import { compile } from 'mathjs';
 
 const query = ref<string>('');
+const submittedQuery = ref<string>('');
 const result = ref<{ id: string; expression: string; distance: number }[]>([]);
 const { fetchEmbedding, key } = useOpenAi();
 
-function createCallback(expressionToComplie: string) {
+function createCallback(expressionToComplie: string): (x: number) => number {
   return (x: number) => compile(expressionToComplie).evaluate({ x });
 }
 
+const resultsCallback = computed(() => result.value.map(({ expression }) => createCallback(expression)));
 const expressionCallback = ref<(x: number) => number>();
 
 const submit = async () => {
@@ -24,6 +26,7 @@ const submit = async () => {
   expressionCallback.value = createCallback(query.value);
 
   searching.value = true;
+  submittedQuery.value = query.value;
 
   const queryEmbedding = await fetchEmbedding(query.value);
 
@@ -44,6 +47,11 @@ const searching = ref(false);
 onMounted(() => {
   mounted.value = true;
 });
+
+async function setQueryAndSubmit(expression: string) {
+  query.value = expression;
+  await submit();
+}
 </script>
 
 <template>
@@ -59,7 +67,7 @@ onMounted(() => {
   <div class="item-center flex min-h-screen flex-col">
     <Topbar />
 
-    <form class="mx-auto mt-40 flex w-full max-w-96 items-start gap-4" @submit.prevent>
+    <form class="mx-auto mb-8 flex w-full max-w-96 items-start gap-4" @submit.prevent>
       <div class="flex flex-col items-start gap-1">
         <input
           v-model="query"
@@ -96,19 +104,32 @@ onMounted(() => {
       </button>
     </form>
 
-    <div class="flex flex-col gap-2 p-10">
-      <pre v-for="{ id, expression, distance } in result" :key="id">{{ expression }}: {{ distance }}</pre>
-    </div>
+    <ClientOnly v-if="expressionCallback">
+      <div class="flex flex-col items-center">
+        <span>{{ submittedQuery }}</span>
+        <Graph :domain-y="[-2, 2]" :domain-x="[-6, 6]">
+          <FunctionPlot
+            v-if="expressionCallback"
+            :key="expressionCallback"
+            :function="expressionCallback"
+            :line-width="2"
+          />
+        </Graph>
+      </div>
 
-    <ClientOnly>
-      <Graph :domain-y="[-2, 2]" :domain-x="[-6, 6]">
-        <FunctionPlot
-          v-if="expressionCallback"
-          :key="expressionCallback"
-          :function="expressionCallback"
-          :line-width="2"
-        />
-      </Graph>
+      <section v-if="result.length > 0" class="flex">
+        <div
+          v-for="(callback, index) in resultsCallback"
+          :key="callback"
+          class="flex cursor-pointer flex-col items-center"
+          @click="setQueryAndSubmit(result[index].expression)"
+        >
+          <span>{{ result.at(index)?.expression }}</span>
+          <Graph :key="callback" :domain-y="[-2, 2]" :domain-x="[-6, 6]">
+            <FunctionPlot v-if="callback" :key="callback" :function="callback" :line-width="2" />
+          </Graph>
+        </div>
+      </section>
     </ClientOnly>
   </div>
 </template>
