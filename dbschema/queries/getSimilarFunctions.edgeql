@@ -6,6 +6,7 @@ with
     id,
     expression,
     distance := result.distance,
+    favorite := (result.object.id in (global current_user).favorites.id)
   }
   filter
     result.distance < 0.5 and result.distance > 0.001

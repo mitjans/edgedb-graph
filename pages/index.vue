@@ -1,7 +1,25 @@
 <script setup lang="ts">
+import { Graph, FunctionPlot } from '@ksassnowski/vueclid';
+import { compile } from 'mathjs';
+
 const query = ref<string>('');
-const result = ref<{ id: string; expression: string; distance: number }[]>([]);
+const submittedQuery = ref<string>('');
+const submittedQueryId = ref<string>('');
+const submittedQueryFavorite = ref<boolean>(false);
+const result = ref<{ id: string; expression: string; distance: number; favorite: boolean }[]>([]);
 const { fetchEmbedding, key } = useOpenAi();
+
+function createCallback(expressionToComplie: string): (x: number) => number {
+  return (x: number) => compile(expressionToComplie).evaluate({ x });
+}
+
+const parsedResults = computed(() =>
+  result.value.map((res) => ({
+    ...res,
+    callback: createCallback(res.expression),
+  })),
+);
+const expressionCallback = ref<(x: number) => number>();
 
 const submit = async () => {
   if (!key.value) {
@@ -12,17 +30,25 @@ const submit = async () => {
     return;
   }
 
+  expressionCallback.value = createCallback(query.value);
+
   searching.value = true;
+  submittedQuery.value = query.value;
 
   const queryEmbedding = await fetchEmbedding(query.value);
 
-  const { result: searchResults } = await $fetch('/api/search', {
+  const {
+    result: searchResults,
+    id,
+    favorite,
+  } = await $fetch('/api/search', {
     method: 'POST',
-    body: { query: queryEmbedding },
+    body: { embedding: queryEmbedding, query: query.value },
   });
 
+  submittedQueryId.value = id;
+  submittedQueryFavorite.value = favorite;
   result.value = searchResults;
-
   searching.value = false;
 };
 
@@ -33,6 +59,20 @@ const searching = ref(false);
 onMounted(() => {
   mounted.value = true;
 });
+
+async function setQueryAndSubmit(expression: string) {
+  query.value = expression;
+  await submit();
+}
+
+const toggleFavorite = async (favorite: boolean) => {
+  submittedQueryFavorite.value = favorite;
+
+  await $fetch('/api/user/favorites', {
+    method: 'PATCH',
+    body: { id: submittedQueryId.value, favorite },
+  });
+};
 </script>
 
 <template>
@@ -48,7 +88,7 @@ onMounted(() => {
   <div class="item-center flex min-h-screen flex-col">
     <Topbar />
 
-    <form class="mx-auto mt-40 flex w-full max-w-96 items-start gap-4" @submit.prevent>
+    <form class="mx-auto mb-8 flex w-full max-w-96 items-start gap-4" @submit.prevent>
       <div class="flex flex-col items-start gap-1">
         <input
           v-model="query"
@@ -85,8 +125,46 @@ onMounted(() => {
       </button>
     </form>
 
-    <div class="flex flex-col gap-2 p-10">
-      <pre v-for="{ id, expression, distance } in result" :key="id">{{ expression }}: {{ distance }}</pre>
+    <div class="flex justify-center">
+      <button
+        v-if="submittedQuery.length > 0"
+        :disabled="searching"
+        class="flex items-center rounded-md bg-emerald-400 p-2 text-neutral-50 disabled:opacity-40"
+        @click="toggleFavorite(!submittedQueryFavorite)"
+      >
+        <Icon :name="submittedQueryFavorite ? 'ph:star-fill' : 'ph:star'" size="20" />
+      </button>
     </div>
+
+    <ClientOnly v-if="expressionCallback">
+      <div class="flex flex-col items-center">
+        <span>{{ submittedQuery }}</span>
+        <Graph :domain-y="[-2, 2]" :domain-x="[-6, 6]" :units="false">
+          <FunctionPlot
+            v-if="expressionCallback"
+            :key="expressionCallback"
+            :function="expressionCallback"
+            :line-width="2"
+          />
+        </Graph>
+      </div>
+
+      <section v-if="result.length > 0" class="flex">
+        <div
+          v-for="{ callback, expression, id, favorite } in parsedResults"
+          :key="id"
+          class="flex cursor-pointer flex-col items-center"
+          @click="setQueryAndSubmit(expression)"
+        >
+          <span>{{ expression }}</span>
+
+          <Icon :name="favorite ? 'ph:star-fill' : 'ph:star'" />
+
+          <Graph :domain-y="[-2, 2]" :domain-x="[-6, 6]" :units="false">
+            <FunctionPlot :function="callback" :line-width="2" />
+          </Graph>
+        </div>
+      </section>
+    </ClientOnly>
   </div>
 </template>

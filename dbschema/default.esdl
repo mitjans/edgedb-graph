@@ -13,6 +13,7 @@ module default {
     required identity: ext::auth::Identity {
       constraint exclusive;
     };
+    multi favorites: Function;
   }
 
   type Function {
