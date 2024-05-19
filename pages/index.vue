@@ -49,6 +49,25 @@ const submit = async () => {
   submittedQueryId.value = id;
   submittedQueryFavorite.value = favorite;
   result.value = searchResults;
+
+  await nextTick();
+  const svgPaths = document.querySelectorAll('path');
+  svgPaths.forEach((path) => {
+    const d = path.getAttribute('d');
+    if (!d || !d.includes('NaN')) return;
+
+    const cleanedSvgPath = d
+      // Remove NaN, Infinity, -Infinity
+      .replace(/\b\d+(\.\d+)? (NaN|Infinity|-Infinity)[L ]?/g, '')
+      // Make extremely small numbers 0
+      .replace(/\b-?\d+(\.\d+)?e-\d+\b/g, '0')
+      // Clean up M L (svg path start)
+      .replace(/^M L\s*/, 'M ')
+      .trim();
+
+    path.setAttribute('d', cleanedSvgPath);
+  });
+
   searching.value = false;
 };
 
