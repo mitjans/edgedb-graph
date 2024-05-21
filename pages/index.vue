@@ -65,7 +65,15 @@ async function setQueryAndSubmit(expression: string) {
   await submit();
 }
 
+const { user } = useUser();
+const showLoginModal = ref(false);
+
 const toggleFavorite = async (favorite: boolean) => {
+  if (!user.value) {
+    showLoginModal.value = true;
+    return;
+  }
+
   submittedQueryFavorite.value = favorite;
 
   await $fetch('/api/user/favorites', {
@@ -83,6 +91,10 @@ const toggleFavorite = async (favorite: boolean) => {
         The key will be only stored locally in your device and <b>never</b> sent to any server
       </span>
     </div>
+  </Modal>
+
+  <Modal v-model:show="showLoginModal" class="w-96" title="Sign in or Sign up">
+    <Signin />
   </Modal>
 
   <div class="item-center flex min-h-screen flex-col">
