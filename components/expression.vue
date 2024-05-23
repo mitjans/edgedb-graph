@@ -2,9 +2,10 @@
 import { Graph, FunctionPlot } from '@ksassnowski/vueclid';
 import { compile } from 'mathjs';
 
-const { expression } = defineProps<{
+const { expression, scale = 1 } = defineProps<{
   expression: string;
   favorite: boolean;
+  scale?: number;
 }>();
 
 const callback = computed(() => {
@@ -21,7 +22,14 @@ const callback = computed(() => {
       <Icon :name="favorite ? 'ph:star-fill' : 'ph:star'" />
     </div>
 
-    <Graph :width="200" :height="200" :padding="0" :domain-y="[-6, 6]" :domain-x="[-6, 6]" :units="false">
+    <Graph
+      :width="scale * 200"
+      :height="scale * 200"
+      :padding="0"
+      :domain-y="[-6, 6]"
+      :domain-x="[-6, 6]"
+      :units="false"
+    >
       <FunctionPlot :key="callback" :function="callback" :line-width="2" />
     </Graph>
   </div>
