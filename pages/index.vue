@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { Graph, FunctionPlot } from '@ksassnowski/vueclid';
 import { compile } from 'mathjs';
 
 const query = ref<string>('');
@@ -13,12 +12,6 @@ function createCallback(expressionToComplie: string): (x: number) => number {
   return (x: number) => compile(expressionToComplie).evaluate({ x });
 }
 
-const parsedResults = computed(() =>
-  result.value.map((res) => ({
-    ...res,
-    callback: createCallback(res.expression),
-  })),
-);
 const expressionCallback = ref<(x: number) => number>();
 
 const submit = async () => {
@@ -116,7 +109,7 @@ const toggleFavorite = async (favorite: boolean) => {
     <Signin />
   </Modal>
 
-  <div class="item-center flex min-h-screen flex-col">
+  <div class="flex min-h-screen flex-col">
     <Topbar />
 
     <form class="mx-auto mb-8 flex w-full max-w-96 items-start gap-4" @submit.prevent>
@@ -143,7 +136,7 @@ const toggleFavorite = async (favorite: boolean) => {
       <button
         type="submit"
         class="flex items-center gap-2 rounded-xl bg-emerald-400 px-6 py-3 text-neutral-50 shadow-[0_4px_10px_rgba(0,0,0,.1)] outline-none transition hover:bg-emerald-500 hover:shadow-[0_6px_20px_rgba(0,0,0,.12)] focus:bg-emerald-500 focus:shadow-[0_6px_20px_rgba(0,0,0,.12)] disabled:cursor-not-allowed disabled:bg-emerald-200 disabled:shadow-none"
-        :disabled="query.length === 0 || key === null"
+        :disabled="query.length === 0 || key === null || searching"
         @click="submit"
       >
         <span>Send</span>
@@ -168,33 +161,45 @@ const toggleFavorite = async (favorite: boolean) => {
     </div>
 
     <ClientOnly v-if="expressionCallback">
-      <div class="flex flex-col items-center">
-        <span>{{ submittedQuery }}</span>
-        <Graph :domain-y="[-2, 2]" :domain-x="[-6, 6]" :units="false">
-          <FunctionPlot
-            v-if="expressionCallback"
+      <div class="my-12 flex flex-col items-center">
+        <Transition
+          appear
+          enter-active-class="transition duration-500"
+          enter-from-class="opacity-0 scale-50"
+          enter-to-class="opacity-100 scale-100"
+          leave-active-class="absolute"
+          leave-from-class="opacity-100 scale-100"
+          leave-to-class="opacity-0 scale-50"
+        >
+          <Expression
             :key="expressionCallback"
-            :function="expressionCallback"
-            :line-width="2"
-          />
-        </Graph>
+            :scale="1.3"
+            :expression="submittedQuery"
+            :favorite="submittedQueryFavorite"
+          ></Expression>
+        </Transition>
       </div>
 
-      <section v-if="result.length > 0" class="flex">
-        <div
-          v-for="{ callback, expression, id, favorite } in parsedResults"
-          :key="id"
-          class="flex cursor-pointer flex-col items-center"
-          @click="setQueryAndSubmit(expression)"
+      <section v-if="result.length > 0" class="relative flex justify-center gap-4">
+        <TransitionGroup
+          appear
+          enter-active-class="transition duration-500"
+          enter-from-class="opacity-0 scale-50"
+          enter-to-class="opacity-100 scale-100"
+          leave-active-class="absolute"
+          leave-from-class="opacity-100 scale-100"
+          leave-to-class="opacity-0 scale-50"
+          move-class="transition duration-500"
         >
-          <span>{{ expression }}</span>
-
-          <Icon :name="favorite ? 'ph:star-fill' : 'ph:star'" />
-
-          <Graph :domain-y="[-2, 2]" :domain-x="[-6, 6]" :units="false">
-            <FunctionPlot :function="callback" :line-width="2" />
-          </Graph>
-        </div>
+          <Expression
+            v-for="{ expression, id, favorite } in result"
+            :key="id"
+            :expression
+            :favorite
+            @click="setQueryAndSubmit(expression)"
+          >
+          </Expression>
+        </TransitionGroup>
       </section>
     </ClientOnly>
   </div>

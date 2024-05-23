@@ -13,4 +13,4 @@ with
   order by
     result.distance asc empty last
     then result.object.expression
-  limit 5;
+  limit 4;
