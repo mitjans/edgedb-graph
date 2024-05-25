@@ -109,7 +109,7 @@ const toggleFavorite = async (favorite: boolean) => {
     <Signin />
   </Modal>
 
-  <div class="flex min-h-screen flex-col">
+  <main class="flex min-h-screen flex-col bg-neutral-900 text-white">
     <Topbar />
 
     <form class="mx-auto mb-8 flex w-full max-w-96 items-start gap-4" @submit.prevent>
@@ -118,15 +118,15 @@ const toggleFavorite = async (favorite: boolean) => {
           v-model="query"
           type="text"
           :class="[
-            'relative w-full rounded-xl border-2 px-6 py-3 shadow-[0_4px_10px_rgba(0,0,0,.1)] outline-none transition focus:border-neutral-300 focus:shadow-[0_6px_20px_rgba(0,0,0,.12)]',
-            mounted && key.length === 0 && 'border-red-400 focus:border-red-400',
+            'relative w-full rounded-xl border-2 border-neutral-700 bg-neutral-800 px-6 py-3 shadow-[0_4px_10px_rgba(255,255,255,.03)] outline-none transition focus:border-neutral-600 focus:shadow-[0_6px_20px_rgba(255,255,255,.05)]',
+            mounted && key.length === 0 && 'border-red-600 focus:border-red-600',
           ]"
-          placeholder="x^2 + 10"
+          placeholder="x^2+1"
         />
 
         <button
           v-if="mounted && key.length === 0"
-          class="ml-2 text-xs text-red-400 underline underline-offset-2"
+          class="ml-2 text-xs text-red-600 underline underline-offset-2"
           @click="show = true"
         >
           OpenAI API key missing
@@ -135,7 +135,7 @@ const toggleFavorite = async (favorite: boolean) => {
 
       <button
         type="submit"
-        class="flex items-center gap-2 rounded-xl bg-emerald-400 px-6 py-3 text-neutral-50 shadow-[0_4px_10px_rgba(0,0,0,.1)] outline-none transition hover:bg-emerald-500 hover:shadow-[0_6px_20px_rgba(0,0,0,.12)] focus:bg-emerald-500 focus:shadow-[0_6px_20px_rgba(0,0,0,.12)] disabled:cursor-not-allowed disabled:bg-emerald-200 disabled:shadow-none"
+        class="flex items-center gap-2 rounded-xl bg-emerald-600 px-6 py-3 text-white shadow-[0_4px_10px_rgba(255,255,255,.03)] outline-none transition hover:bg-emerald-500 focus:bg-emerald-500 focus:shadow-[0_6px_20px_rgba(255,255,255,.05)] disabled:cursor-not-allowed disabled:opacity-80 disabled:shadow-none"
         :disabled="query.length === 0 || key === null || searching"
         @click="submit"
       >
@@ -202,5 +202,5 @@ const toggleFavorite = async (favorite: boolean) => {
         </TransitionGroup>
       </section>
     </ClientOnly>
-  </div>
+  </main>
 </template>
