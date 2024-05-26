@@ -74,6 +74,7 @@ onMounted(() => {
 
 async function setQueryAndSubmit(expression: string) {
   query.value = expression;
+  showSideBar.value = false;
   await submit();
 }
 

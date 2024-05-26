@@ -20,7 +20,7 @@ const logout = async () => {
       class="flex items-center gap-2 rounded-md border-2 py-1 pl-2 pr-3 outline-none transition hover:shadow-[0_2px_10px_rgba(0,0,0,.1)]"
       @click="user === null ? (showLoginModal = true) : (showSideBar = true)"
     >
-      <Icon name="ph:star" size="20" />
+      <Icon :name="showSideBar ? 'ph:star-fill' : 'ph:star'" size="20" />
       <span>Favorites</span>
     </button>
 
