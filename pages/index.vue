@@ -98,7 +98,7 @@ const toggleFavorite = async (favorite: boolean) => {
 <template>
   <Modal v-model:show="show" class="w-96" title="Enter OpenAI API key">
     <div class="flex flex-col gap-2">
-      <input v-model="key" type="password" class="rounded-md border px-4 py-2" placeholder="sk-proj-..." />
+      <input v-model="key" type="password" class="rounded-md border bg-zinc-800 px-4 py-2" placeholder="sk-proj-..." />
       <span class="ml-2 text-xs text-zinc-400">
         The key will be only stored locally in your device and <b>never</b> sent to any server
       </span>
