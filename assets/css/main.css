@@ -1,0 +1,11 @@
+*::-webkit-scrollbar {
+  @apply size-5;
+}
+
+::-webkit-scrollbar-corner {
+  @apply bg-transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  @apply overflow-auto rounded-2xl border-[6px] border-solid border-transparent bg-zinc-700 bg-clip-padding hover:bg-zinc-500;
+}
