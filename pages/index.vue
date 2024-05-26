@@ -105,8 +105,27 @@ const toggleFavorite = async (favorite: boolean) => {
 
 <template>
   <Sidebar v-model:show="showSideBar" title="Favorites">
+    <div
+      v-if="user?.favorites === undefined || user.favorites === null || user.favorites.length === 0"
+      class="grid h-full place-items-center text-zinc-500"
+    >
+      <div class="flex h-full flex-col justify-between text-center">
+        <span class="text-xl"> No favorites yet </span>
+        <div class="space-y-4">
+          <span>Here's a cat, though</span>
+          <img
+            src="/images/cat.webp"
+            alt="No favorites yet, here's a photo of a cat though"
+            width="250"
+            class="rounded-lg"
+          />
+        </div>
+      </div>
+    </div>
+
     <Expression
-      v-for="{ expression, id } in user?.favorites || []"
+      v-for="{ expression, id } in user.favorites"
+      v-else
       :key="id"
       :expression="expression"
       :favorite="true"
