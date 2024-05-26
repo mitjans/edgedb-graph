@@ -11,6 +11,29 @@ const { dismissable = true } = defineProps<{
 const modal = ref<HTMLDivElement>();
 onClickOutside(modal, () => (show.value = !dismissable));
 onKeyStroke('Escape', () => (show.value = !dismissable));
+
+watch(show, async () => {
+  if (!show.value) return;
+
+  await nextTick();
+
+  const svgPaths = document.querySelectorAll('path');
+  svgPaths.forEach((path) => {
+    const d = path.getAttribute('d');
+    if (!d || !d.includes('NaN')) return;
+
+    const cleanedSvgPath = d
+      // Remove NaN, Infinity, -Infinity
+      .replace(/\b\d+(\.\d+)? (NaN|Infinity|-Infinity)[L ]?/g, '')
+      // Make extremely small numbers 0
+      .replace(/\b-?\d+(\.\d+)?e-\d+\b/g, '0')
+      // Clean up M L (svg path start)
+      .replace(/^M L\s*/, 'M ')
+      .trim();
+
+    path.setAttribute('d', cleanedSvgPath);
+  });
+});
 </script>
 
 <template>
