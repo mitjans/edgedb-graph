@@ -11,7 +11,7 @@ const logout = async () => {
 </script>
 
 <template>
-  <Modal v-model:show="showLoginModal" class="w-96" title="Sign in or Sign up">
+  <Modal v-model:show="showLoginModal" class="w-80 md:w-96" title="Sign in or Sign up">
     <Signin />
   </Modal>
 

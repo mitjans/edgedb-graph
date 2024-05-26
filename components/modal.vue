@@ -27,7 +27,7 @@ onKeyStroke('Escape', () => (show.value = !dismissable));
         <div
           ref="modal"
           :class="$attrs.class"
-          class="overlay flex flex-col gap-10 rounded-2xl border-2 border-zinc-700 bg-zinc-800 p-6 shadow-[0_0_20px_rgba(0,0,0,0.03)]"
+          class="overlay flex flex-col gap-10 rounded-2xl border-2 border-zinc-700 bg-zinc-800 p-4 shadow-[0_0_20px_rgba(0,0,0,0.03)] md:p-6"
         >
           <div class="flex w-full flex-row-reverse items-center justify-between">
             <button class="grid place-items-center rounded p-1 hover:bg-white/5" @click="show = false">

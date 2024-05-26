@@ -133,7 +133,7 @@ const toggleFavorite = async (favorite: boolean) => {
     ></Expression>
   </Sidebar>
 
-  <Modal v-model:show="show" class="w-96" title="Enter OpenAI API key">
+  <Modal v-model:show="show" class="w-80 md:w-96" title="Enter OpenAI API key">
     <div class="flex flex-col gap-2">
       <input v-model="key" type="password" class="rounded-md border bg-zinc-800 px-4 py-2" placeholder="sk-proj-..." />
       <span class="ml-2 text-xs text-zinc-400">
@@ -142,109 +142,127 @@ const toggleFavorite = async (favorite: boolean) => {
     </div>
   </Modal>
 
-  <Modal v-model:show="showLoginModal" class="w-96" title="Sign in or Sign up">
+  <Modal v-model:show="showLoginModal" class="w-80 md:w-96" title="Sign in or Sign up">
     <Signin />
   </Modal>
 
   <main class="flex min-h-screen flex-col bg-[#242A31] text-white">
     <Topbar />
 
-    <form class="mx-auto mb-8 flex w-full max-w-96 items-start gap-4" @submit.prevent>
-      <div class="flex flex-col items-start gap-1">
-        <input
-          v-model="query"
-          type="text"
-          :class="[
-            'relative w-full rounded-xl border-2 border-zinc-700 bg-zinc-800 px-6 py-3 shadow-[0_4px_10px_rgba(0,0,0,.03)] outline-none transition focus:border-zinc-600 focus:shadow-[0_6px_20px_rgba(0,0,0,.05)]',
-            mounted && key.length === 0 && 'border-red-600 focus:border-red-600',
-          ]"
-          placeholder="x^2+1"
-        />
+    <div class="grid place-items-center gap-4 p-6">
+      <div class="space-y-2 text-center">
+        <h1 class="text-2xl font-black tracking-wide md:text-3xl">EdgeDB Graph</h1>
+        <h2 class="text-zinc-300 md:text-base">Vector embedding powered function grapher</h2>
+      </div>
+
+      <form class="flex gap-4 md:mx-auto md:w-full md:max-w-96" @submit.prevent>
+        <div class="flex flex-col items-start gap-1">
+          <input
+            v-model="query"
+            type="text"
+            :class="[
+              'w-full rounded-xl border-2 border-zinc-700 bg-zinc-800 px-6 py-3 shadow-[0_4px_10px_rgba(0,0,0,.03)] outline-none transition focus:border-zinc-600 focus:shadow-[0_6px_20px_rgba(0,0,0,.05)]',
+              mounted && key.length === 0 && 'border-red-600 focus:border-red-600',
+            ]"
+            placeholder="x^2+1"
+          />
+
+          <button
+            v-if="mounted && key.length === 0"
+            class="text-xs text-red-600 underline underline-offset-2"
+            @click="show = true"
+          >
+            OpenAI API key missing
+          </button>
+        </div>
 
         <button
-          v-if="mounted && key.length === 0"
-          class="ml-2 text-xs text-red-600 underline underline-offset-2"
-          @click="show = true"
+          type="submit"
+          class="flex items-center gap-2 rounded-xl bg-emerald-600 px-6 py-3 text-white shadow-[0_4px_10px_rgba(0,0,0,.03)] outline-none transition hover:bg-emerald-500 focus:bg-emerald-500 focus:shadow-[0_6px_20px_rgba(0,0,0,.05)] disabled:cursor-not-allowed disabled:shadow-none"
+          :disabled="query.length === 0 || key === null || searching"
+          @click="submit"
         >
-          OpenAI API key missing
+          <span>Send</span>
+
+          <Icon
+            size="18"
+            :name="searching ? 'ph:spinner' : 'ph:arrow-circle-right-fill'"
+            :class="searching && 'animate-spin'"
+          />
         </button>
-      </div>
-
-      <button
-        type="submit"
-        class="flex items-center gap-2 rounded-xl bg-emerald-600 px-6 py-3 text-white shadow-[0_4px_10px_rgba(0,0,0,.03)] outline-none transition hover:bg-emerald-500 focus:bg-emerald-500 focus:shadow-[0_6px_20px_rgba(0,0,0,.05)] disabled:cursor-not-allowed disabled:shadow-none"
-        :disabled="query.length === 0 || key === null || searching"
-        @click="submit"
-      >
-        <span>Send</span>
-
-        <Icon
-          size="18"
-          :name="searching ? 'ph:spinner' : 'ph:arrow-circle-right-fill'"
-          :class="searching && 'animate-spin'"
-        />
-      </button>
-    </form>
-
-    <div class="flex justify-center">
-      <button
-        v-if="submittedQuery.length > 0"
-        :disabled="searching"
-        class="flex items-center rounded-md bg-emerald-400 p-2 text-zinc-50 disabled:opacity-40"
-        @click="toggleFavorite(!submittedQueryFavorite)"
-      >
-        <Icon :name="submittedQueryFavorite ? 'ph:star-fill' : 'ph:star'" size="20" />
-      </button>
+      </form>
     </div>
 
-    <ClientOnly v-if="expressionCallback">
-      <div class="my-12 flex flex-col items-center">
-        <Transition
-          appear
-          enter-active-class="transition duration-500"
-          enter-from-class="opacity-0 scale-50"
-          enter-to-class="opacity-100 scale-100"
-          leave-active-class="absolute"
-          leave-from-class="opacity-100 scale-100"
-          leave-to-class="opacity-0 scale-50"
-        >
-          <Expression
-            :key="expressionCallback"
-            :scale="1.3"
-            :expression="submittedQuery"
-            :favorite="submittedQueryFavorite"
-          ></Expression>
-        </Transition>
+    <template v-if="expressionCallback">
+      <div class="my-12 flex flex-col gap-4">
+        <div class="flex justify-center">
+          <button
+            v-if="submittedQuery.length > 0"
+            :disabled="searching"
+            class="flex items-center rounded-md bg-emerald-400 p-2 text-zinc-50 disabled:opacity-40"
+            @click="toggleFavorite(!submittedQueryFavorite)"
+          >
+            <Icon :name="submittedQueryFavorite ? 'ph:star-fill' : 'ph:star'" size="20" />
+          </button>
+        </div>
+
+        <ClientOnly>
+          <div class="flex flex-col items-center">
+            <Transition
+              appear
+              enter-active-class="transition duration-500"
+              enter-from-class="opacity-0 scale-50"
+              enter-to-class="opacity-100 scale-100"
+              leave-active-class="absolute"
+              leave-from-class="opacity-100 scale-100"
+              leave-to-class="opacity-0 scale-50"
+            >
+              <Expression
+                :key="expressionCallback"
+                :scale="1.3"
+                :expression="submittedQuery"
+                :favorite="submittedQueryFavorite"
+              ></Expression>
+            </Transition>
+          </div>
+        </ClientOnly>
       </div>
 
-      <section v-if="result.length > 0" class="relative flex justify-center gap-4">
-        <TransitionGroup
-          appear
-          enter-active-class="transition duration-500"
-          enter-from-class="opacity-0 scale-50"
-          enter-to-class="opacity-100 scale-100"
-          leave-active-class="absolute"
-          leave-from-class="opacity-100 scale-100"
-          leave-to-class="opacity-0 scale-50"
-          move-class="transition duration-500"
+      <ClientOnly>
+        <section
+          v-if="result.length > 0"
+          class="relative mb-12 flex flex-col items-center justify-center gap-4 md:flex-row"
         >
-          <Expression
-            v-for="{ expression, id, favorite } in result"
-            :key="id"
-            :expression
-            :favorite
-            @click="setQueryAndSubmit(expression)"
+          <TransitionGroup
+            appear
+            enter-active-class="transition duration-500"
+            enter-from-class="opacity-0 scale-50"
+            enter-to-class="opacity-100 scale-100"
+            leave-active-class="absolute"
+            leave-from-class="opacity-100 scale-100"
+            leave-to-class="opacity-0 scale-50"
+            move-class="transition duration-500"
           >
-          </Expression>
-        </TransitionGroup>
-      </section>
-    </ClientOnly>
+            <Expression
+              v-for="{ expression, id, favorite } in result"
+              :key="id"
+              :expression
+              :favorite
+              @click="setQueryAndSubmit(expression)"
+            >
+            </Expression>
+          </TransitionGroup>
+        </section>
+      </ClientOnly>
+    </template>
 
-    <div v-else class="mt-9 grid grow place-items-center text-zinc-400">
-      <div class="-mt-40 grid place-items-center">
-        <span class="text-3xl font-black tracking-wide">EdgeDB Graph</span>
-        <span>Vector embedding powered function grapher</span>
-        <img src="/images/placeholder.webp" alt="Placeholder for function graph" class="w-h-96 h-96 opacity-60" />
+    <div v-else class="text-zinc-400">
+      <div class="grid place-items-center">
+        <img
+          src="/images/placeholder.webp"
+          alt="Placeholder for function graph"
+          class="w-6h-64 h-64 opacity-60 md:h-96 md:w-96"
+        />
         <span>Enter a mathematical expression to get started</span>
       </div>
     </div>
