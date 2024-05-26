@@ -23,7 +23,16 @@ const submit = async () => {
     return;
   }
 
-  expressionCallback.value = createCallback(query.value);
+  const callback = createCallback(query.value);
+
+  try {
+    callback(-1.1); // Attempt to compile and use the expression
+  } catch (error) {
+    alert('Invalid expression');
+    return;
+  }
+
+  expressionCallback.value = callback;
 
   searching.value = true;
   submittedQuery.value = query.value;
