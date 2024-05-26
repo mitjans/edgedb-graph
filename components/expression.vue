@@ -15,10 +15,10 @@ const callback = computed(() => {
 
 <template>
   <div
-    class="flex cursor-pointer flex-col items-center gap-4 rounded-2xl bg-neutral-800 p-4 shadow-[0_4px_10px_rgba(255,255,255,.05)] outline outline-1 outline-neutral-700 transition duration-300 hover:scale-105"
+    class="flex cursor-pointer flex-col items-center gap-4 rounded-2xl bg-zinc-800 p-4 shadow-[0_4px_10px_rgba(0,0,0,.05)] outline outline-1 outline-zinc-700 transition duration-300 hover:scale-105"
   >
     <div class="flex w-full items-center gap-2">
-      <pre class="grow rounded-lg bg-neutral-700 px-4 py-2 text-center font-mono">{{ expression }}</pre>
+      <pre class="grow rounded-lg bg-zinc-700 px-4 py-2 text-center font-mono">{{ expression }}</pre>
       <Icon :name="favorite ? 'ph:star-fill' : 'ph:star'" />
     </div>
 

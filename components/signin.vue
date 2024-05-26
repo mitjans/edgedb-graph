@@ -114,7 +114,7 @@ const { loading: googleLoading, signin: googleSignIn } = useGoogleSignIn();
           <input
             id="email"
             v-model="email"
-            class="rounded-md border border-neutral-700 bg-neutral-800 px-4 py-2 outline-neutral-700"
+            class="rounded-md border border-zinc-700 bg-zinc-800 px-4 py-2 outline-zinc-700"
             type="email"
             placeholder="Your email..."
           />
@@ -125,7 +125,7 @@ const { loading: googleLoading, signin: googleSignIn } = useGoogleSignIn();
           <input
             id="password"
             v-model="password"
-            class="rounded-md border border-neutral-700 bg-neutral-800 px-4 py-2 outline-neutral-700"
+            class="rounded-md border border-zinc-700 bg-zinc-800 px-4 py-2 outline-zinc-700"
             type="password"
             placeholder="Your password..."
           />
@@ -135,7 +135,7 @@ const { loading: googleLoading, signin: googleSignIn } = useGoogleSignIn();
       <span v-if="signinError || signupError" class="text-red-400">{{ signinError || signupError }}</span>
 
       <button
-        class="rounded-xl border-2 border-transparent bg-emerald-400 px-4 py-2 text-white shadow-[0_4px_10px_rgba(255,255,255,.03)] outline-none transition hover:border-emerald-100 focus:border-emerald-100 disabled:cursor-not-allowed disabled:shadow-none"
+        class="rounded-xl border-2 border-transparent bg-emerald-400 px-4 py-2 text-white shadow-[0_4px_10px_rgba(0,0,0,.03)] outline-none transition hover:border-emerald-100 focus:border-emerald-100 disabled:cursor-not-allowed disabled:shadow-none"
         type="submit"
         :disabled="signinLoading"
         @click="signin()"
@@ -145,7 +145,7 @@ const { loading: googleLoading, signin: googleSignIn } = useGoogleSignIn();
       </button>
 
       <button
-        class="rounded-xl border-2 border-emerald-400 px-4 py-2 text-emerald-400 shadow-[0_4px_10px_rgba(255,255,255,.03)] outline-none transition hover:border-emerald-300 hover:text-emerald-300 focus:border-emerald-300 focus:text-emerald-300 disabled:cursor-not-allowed disabled:shadow-none"
+        class="rounded-xl border-2 border-emerald-400 px-4 py-2 text-emerald-400 shadow-[0_4px_10px_rgba(0,0,0,.03)] outline-none transition hover:border-emerald-300 hover:text-emerald-300 focus:border-emerald-300 focus:text-emerald-300 disabled:cursor-not-allowed disabled:shadow-none"
         type="submit"
         :disabled="signupLoading"
         @click="signup()"
@@ -155,10 +155,10 @@ const { loading: googleLoading, signin: googleSignIn } = useGoogleSignIn();
       </button>
     </form>
 
-    <hr class="border-neutral-600" />
+    <hr class="border-zinc-600" />
 
     <button
-      class="flex items-center justify-center gap-2 rounded-xl border-2 border-neutral-600 px-4 py-2 text-neutral-300 shadow-[0_4px_10px_rgba(255,255,255,.03)] outline-none transition hover:border-neutral-500 hover:text-neutral-300 focus:border-neutral-300 disabled:cursor-not-allowed disabled:shadow-none"
+      class="flex items-center justify-center gap-2 rounded-xl border-2 border-zinc-600 px-4 py-2 text-zinc-300 shadow-[0_4px_10px_rgba(0,0,0,.03)] outline-none transition hover:border-zinc-500 hover:text-zinc-300 focus:border-zinc-300 disabled:cursor-not-allowed disabled:shadow-none"
       type="submit"
       :disabled="googleLoading"
       @click="googleSignIn()"

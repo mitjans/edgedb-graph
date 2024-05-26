@@ -4,6 +4,6 @@
 
 <style>
 body {
-  @apply bg-gray-900;
+  @apply bg-zinc-900;
 }
 </style>

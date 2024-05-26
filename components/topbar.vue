@@ -18,7 +18,7 @@ const logout = async () => {
     <button
       v-if="user"
       type="submit"
-      class="flex items-center gap-2 rounded-md border-2 border-red-400 px-3 py-1 text-red-400 outline-none transition hover:border-red-500 hover:shadow-[0_2px_10px_rgba(255,255,255,.1)] focus:border-red-500 focus:shadow-[0_2px_10px_rgba(255,255,255,.1)] disabled:cursor-not-allowed disabled:bg-emerald-200 disabled:shadow-none"
+      class="flex items-center gap-2 rounded-md border-2 border-red-400 px-3 py-1 text-red-400 outline-none transition hover:border-red-500 hover:shadow-[0_2px_10px_rgba(0,0,0,.1)] focus:border-red-500 focus:shadow-[0_2px_10px_rgba(0,0,0,.1)] disabled:cursor-not-allowed disabled:bg-emerald-200 disabled:shadow-none"
       @click="logout"
     >
       Logout
@@ -27,7 +27,7 @@ const logout = async () => {
     <button
       v-else
       type="submit"
-      class="flex items-center gap-2 rounded-md border-2 border-emerald-400 px-3 py-1 text-emerald-400 outline-none transition hover:border-emerald-500 hover:shadow-[0_2px_10px_rgba(255,255,255,.1)] focus:border-emerald-500 focus:shadow-[0_2px_10px_rgba(255,255,255,.1)] disabled:cursor-not-allowed disabled:bg-emerald-200 disabled:shadow-none"
+      class="flex items-center gap-2 rounded-md border-2 border-emerald-400 px-3 py-1 text-emerald-400 outline-none transition hover:border-emerald-500 hover:shadow-[0_2px_10px_rgba(0,0,0,.1)] focus:border-emerald-500 focus:shadow-[0_2px_10px_rgba(0,0,0,.1)] disabled:cursor-not-allowed disabled:bg-emerald-200 disabled:shadow-none"
       @click="showLoginModal = true"
     >
       Login
