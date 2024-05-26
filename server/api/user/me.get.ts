@@ -13,7 +13,17 @@ export default defineEventHandler(async (event) => {
   });
 
   try {
-    const user = await e.select(e.global.current_user).assert_single().run(client);
+    const user = await e
+      .select(e.global.current_user, () => ({
+        id: true,
+        favorites: () => ({
+          id: true,
+          expression: true,
+        }),
+      }))
+      .assert_single()
+      .run(client);
+    console.log(user);
     return { user };
   } catch {
     throw createError({ status: 401 });

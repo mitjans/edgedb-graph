@@ -4,5 +4,5 @@
   // https://github.com/nuxt/nuxt/issues/26871#issuecomment-2082226649
   // TODO: Remove module resolution once the following issue is resolved:
   // https://github.com/edgedb/edgedb-js/issues/455#issuecomment-1570505925
-  "compilerOptions": { "noEmit": true, "moduleResolution": "NodeNext" }
+  "compilerOptions": { "noEmit": true }
 }

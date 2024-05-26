@@ -79,6 +79,7 @@ async function setQueryAndSubmit(expression: string) {
 
 const { user } = useUser();
 const showLoginModal = ref(false);
+const showSideBar = useState('favorite', () => false);
 
 const toggleFavorite = async (favorite: boolean) => {
   if (!user.value) {
@@ -88,6 +89,12 @@ const toggleFavorite = async (favorite: boolean) => {
 
   submittedQueryFavorite.value = favorite;
 
+  if (!favorite) {
+    user.value.favorites = user.value.favorites.filter(({ id }) => id !== submittedQueryId.value);
+  } else {
+    user.value.favorites.push({ id: submittedQueryId.value, expression: submittedQuery.value });
+  }
+
   await $fetch('/api/user/favorites', {
     method: 'PATCH',
     body: { id: submittedQueryId.value, favorite },
@@ -96,6 +103,16 @@ const toggleFavorite = async (favorite: boolean) => {
 </script>
 
 <template>
+  <Sidebar v-model:show="showSideBar" title="Favorites">
+    <Expression
+      v-for="{ expression, id } in user?.favorites || []"
+      :key="id"
+      :expression="expression"
+      :favorite="true"
+      @click="setQueryAndSubmit(expression)"
+    ></Expression>
+  </Sidebar>
+
   <Modal v-model:show="show" class="w-96" title="Enter OpenAI API key">
     <div class="flex flex-col gap-2">
       <input v-model="key" type="password" class="rounded-md border bg-zinc-800 px-4 py-2" placeholder="sk-proj-..." />
@@ -135,7 +152,7 @@ const toggleFavorite = async (favorite: boolean) => {
 
       <button
         type="submit"
-        class="flex items-center gap-2 rounded-xl bg-emerald-600 px-6 py-3 text-white shadow-[0_4px_10px_rgba(0,0,0,.03)] outline-none transition hover:bg-emerald-500 focus:bg-emerald-500 focus:shadow-[0_6px_20px_rgba(0,0,0,.05)] disabled:cursor-not-allowed disabled:opacity-80 disabled:shadow-none"
+        class="flex items-center gap-2 rounded-xl bg-emerald-600 px-6 py-3 text-white shadow-[0_4px_10px_rgba(0,0,0,.03)] outline-none transition hover:bg-emerald-500 focus:bg-emerald-500 focus:shadow-[0_6px_20px_rgba(0,0,0,.05)] disabled:cursor-not-allowed disabled:shadow-none"
         :disabled="query.length === 0 || key === null || searching"
         @click="submit"
       >
@@ -203,11 +220,13 @@ const toggleFavorite = async (favorite: boolean) => {
       </section>
     </ClientOnly>
 
-    <div v-else class="mt-9 grid place-items-center text-zinc-100">
-      <span class="text-3xl font-black tracking-wide">EdgeDB Graph</span>
-      <span>Vector embedding powered function grapher</span>
-      <img src="/images/placeholder.webp" alt="Placeholder for function graph" class="h-96 w-96" />
-      <span>Enter a mathematical expression to get started</span>
+    <div v-else class="mt-9 grid grow place-items-center text-zinc-400">
+      <div class="-mt-40 grid place-items-center">
+        <span class="text-3xl font-black tracking-wide">EdgeDB Graph</span>
+        <span>Vector embedding powered function grapher</span>
+        <img src="/images/placeholder.webp" alt="Placeholder for function graph" class="w-h-96 h-96 opacity-60" />
+        <span>Enter a mathematical expression to get started</span>
+      </div>
     </div>
   </main>
 </template>
