@@ -155,7 +155,7 @@ const toggleFavorite = async (favorite: boolean) => {
         <h2 class="text-zinc-300 md:text-base">Vector embedding powered function grapher</h2>
       </div>
 
-      <form class="flex gap-4 md:mx-auto md:w-full md:max-w-96" @submit.prevent>
+      <form class="flex items-start gap-4 md:mx-auto md:w-full md:max-w-96" @submit.prevent>
         <div class="flex flex-col items-start gap-1">
           <input
             v-model="query"
@@ -174,6 +174,8 @@ const toggleFavorite = async (favorite: boolean) => {
           >
             OpenAI API key missing
           </button>
+
+          <span v-else class="text-xs text-zinc-600"> We only allow one unknown variable named `x` </span>
         </div>
 
         <button
