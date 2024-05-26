@@ -23,17 +23,17 @@ onKeyStroke('Escape', () => (show.value = !dismissable));
         leave: 0,
       }"
     >
-      <div v-if="show" class="fixed inset-0 z-20 grid place-items-center bg-black/5 backdrop-blur-md">
+      <div v-if="show" class="fixed inset-0 z-20 grid place-items-center bg-black/5 text-zinc-50 backdrop-blur-md">
         <div
           ref="modal"
           :class="$attrs.class"
-          class="overlay flex flex-col gap-10 rounded-2xl border-2 bg-white p-6 shadow-[0_0_20px_rgba(0,0,0,0.1)]"
+          class="overlay flex flex-col gap-10 rounded-2xl border-2 border-zinc-700 bg-zinc-800 p-6 shadow-[0_0_20px_rgba(0,0,0,0.03)]"
         >
           <div class="flex w-full flex-row-reverse items-center justify-between">
-            <button @click="show = false">
+            <button class="grid place-items-center rounded p-1 hover:bg-white/5" @click="show = false">
               <Icon name="ph:x" />
             </button>
-            <span v-if="title" class="text-xl">{{ title }}</span>
+            <span v-if="title" class="text-xl font-medium">{{ title }}</span>
           </div>
           <slot />
         </div>
