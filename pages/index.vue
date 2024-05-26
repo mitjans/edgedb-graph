@@ -6,6 +6,8 @@ const submittedQuery = ref<string>('');
 const submittedQueryId = ref<string>('');
 const submittedQueryFavorite = ref<boolean>(false);
 const result = ref<{ id: string; expression: string; distance: number; favorite: boolean }[]>([]);
+const invalidExpression = ref(false);
+
 const { fetchEmbedding, key } = useOpenAi();
 
 function createCallback(expressionToComplie: string): (x: number) => number {
@@ -23,12 +25,13 @@ const submit = async () => {
     return;
   }
 
+  invalidExpression.value = false;
   const callback = createCallback(query.value);
 
   try {
     callback(-1.1); // Attempt to compile and use the expression
   } catch (error) {
-    alert('Invalid expression');
+    invalidExpression.value = true;
     return;
   }
 
@@ -184,7 +187,9 @@ const toggleFavorite = async (favorite: boolean) => {
             OpenAI API key missing
           </button>
 
-          <span v-else class="text-xs text-zinc-600"> We only allow one unknown variable named `x` </span>
+          <span v-else class="text-xs text-zinc-600" :class="invalidExpression && 'text-red-500'">
+            We only allow one unknown variable named `x`
+          </span>
         </div>
 
         <button
