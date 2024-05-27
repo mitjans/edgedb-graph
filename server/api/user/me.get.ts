@@ -23,7 +23,6 @@ export default defineEventHandler(async (event) => {
       }))
       .assert_single()
       .run(client);
-    console.log(user);
     return { user };
   } catch {
     throw createError({ status: 401 });
