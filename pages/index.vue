@@ -187,7 +187,7 @@ const toggleFavorite = async (favorite: boolean) => {
             OpenAI API key missing
           </button>
 
-          <span v-else class="text-xs text-zinc-600" :class="invalidExpression && 'text-red-500'">
+          <span v-else class="text-xs" :class="invalidExpression ? 'text-red-500' : 'text-zinc-600'">
             We only allow one unknown variable named `x`
           </span>
         </div>
